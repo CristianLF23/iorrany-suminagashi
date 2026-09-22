@@ -1,6 +1,6 @@
 (() => {
- const mobile=matchMedia('(max-width: 699px)'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
- if(!mobile.matches||reduced.matches||navigator.connection?.saveData)return;
+ const mobile=matchMedia('(max-width: 699px), (max-width: 899px) and (pointer: coarse)'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ if(!mobile.matches||reduced.matches)return;
  const overlay=document.createElement('dialog');overlay.className='mobile-intro';overlay.setAttribute('aria-label','Abertura da Ioiô Tattoo');
  const video=document.createElement('video');video.muted=true;video.defaultMuted=true;video.playsInline=true;video.autoplay=true;video.preload='auto';video.setAttribute('aria-hidden','true');
  const audio=document.createElement('audio');audio.preload='auto';audio.volume=.85;audio.setAttribute('aria-hidden','true');
