@@ -1,7 +1,7 @@
 (() => {
 const works=[...document.querySelectorAll('.work')],dialog=document.querySelector('#work-dialog'),photo=document.querySelector('#dialog-image'),title=document.querySelector('#dialog-title'),description=document.querySelector('#dialog-description'),other=document.querySelector('#other-photo');
 let index=0,alternate=false,origin;
-function show(i){index=(i+works.length)%works.length;const work=works[index];alternate=false;photo.src=work.href;photo.alt=work.querySelector('img').alt;title.textContent=work.dataset.title;description.textContent=work.dataset.description;other.hidden=!work.dataset.extra;other.textContent='Ver outra fotografia';document.querySelector('#counter').textContent=(index+1)+' / '+works.length;}
+function show(i){index=(i+works.length)%works.length;const work=works[index];alternate=false;photo.src=work.href;photo.alt=work.querySelector('img').alt;title.textContent=work.dataset.title;document.dispatchEvent(new CustomEvent('ink-title-change',{detail:title}));description.textContent=work.dataset.description;other.hidden=!work.dataset.extra;other.textContent='Ver outra fotografia';document.querySelector('#counter').textContent=(index+1)+' / '+works.length;}
 works.forEach((work,i)=>work.dataset.workIndex=String(i));
 const gallery=document.querySelector('.gallery');
 gallery.addEventListener('click',event=>{const work=event.target.closest('[data-work-index]');if(!work||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;event.preventDefault();const i=Number(work.dataset.workIndex);origin=works[i];show(i);dialog.showModal();document.body.classList.add('modal-open');document.dispatchEvent(new Event('ink-modal'));});
@@ -18,8 +18,36 @@ for(let rowIndex=0;rowIndex<2;rowIndex++){
 }
 const pause=document.createElement('button');pause.type='button';pause.className='gallery-pause';pause.textContent='Pausar galeria';pause.setAttribute('aria-pressed','false');gallery.before(pause);
 pause.addEventListener('click',()=>{const paused=gallery.classList.toggle('is-paused');pause.textContent=paused?'Retomar movimento':'Pausar galeria';pause.setAttribute('aria-pressed',String(paused));});
-gallery.addEventListener('pointerdown',()=>gallery.classList.add('is-touching'),{passive:true});
-const release=()=>gallery.classList.remove('is-touching');addEventListener('pointerup',release,{passive:true});addEventListener('pointercancel',release,{passive:true});
+let draggedUntil=0;
+gallery.addEventListener('click',event=>{if(performance.now()<draggedUntil){event.preventDefault();event.stopImmediatePropagation();}},true);
+gallery.addEventListener('dragstart',event=>event.preventDefault());
+gallery.querySelectorAll('.flow-row').forEach((row,rowIndex)=>{
+ let drag=null;
+ row.addEventListener('pointerdown',event=>{
+  if(event.button!==0||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(event.pointerType==='mouse')event.preventDefault();
+  const track=row.querySelector('.flow-track'),animation=track.getAnimations()[0];
+  if(!animation)return;
+  drag={id:event.pointerId,x:event.clientX,y:event.clientY,time:Number(animation.currentTime)||0,animation,width:row.querySelector('.flow-group').getBoundingClientRect().width,moved:false};
+  gallery.classList.add('is-touching');
+ });
+ row.addEventListener('pointermove',event=>{
+  if(!drag||event.pointerId!==drag.id)return;
+  const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+  if(!drag.moved&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){drag=null;gallery.classList.remove('is-touching');return;}
+  if(!drag.moved&&Math.abs(dx)<8)return;
+  if(!drag.moved){drag.moved=true;row.setPointerCapture(event.pointerId);row.classList.add('is-dragging');}
+  const time=drag.time+dx/drag.width*48000*(rowIndex===0?-1:1);
+  drag.animation.currentTime=((time%48000)+48000)%48000;
+ });
+ function end(event){
+  if(!drag||event.pointerId!==drag.id)return;
+  if(drag.moved)draggedUntil=performance.now()+450;
+  if(row.hasPointerCapture(event.pointerId))row.releasePointerCapture(event.pointerId);
+  drag=null;row.classList.remove('is-dragging');gallery.classList.remove('is-touching');
+ }
+ addEventListener('pointerup',end,{passive:true});addEventListener('pointercancel',end,{passive:true});row.addEventListener('lostpointercapture',end);
+});
 gallery.addEventListener('focusin',event=>{if(event.target.matches('.work'))requestAnimationFrame(()=>{if(document.activeElement===event.target)event.target.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});});});
 gallery.addEventListener('focusout',()=>requestAnimationFrame(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;gallery.querySelectorAll('.flow-row').forEach(row=>{if(!row.contains(document.activeElement))row.scrollLeft=0;});}));
 new IntersectionObserver(entries=>gallery.classList.toggle('is-offscreen',!entries[0].isIntersecting)).observe(gallery);

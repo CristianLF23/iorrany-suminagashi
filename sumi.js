@@ -67,7 +67,7 @@
  const originalDraw=draw;draw=function(){originalDraw();if(gl&&!lost&&host.dataset.render==='webgl')document.dispatchEvent(new Event('ink-frame'));};
  function tick(now){raf=0;if(!allowed()){sync();return;}if(!last)last=now;const delta=now-last;if(delta>=32){if(delta>50)slow++;else slow=Math.max(0,slow-1);elapsed+=Math.min(delta,75)/1000;last=now;if(now>gesture.until&&!gesture.active){gesture.target=0;gesture.vx*=.88;gesture.vy*=.88;}const dt=Math.min(delta,75)/1000;const follow=1.-Math.exp(-dt*18);gesture.x+=(gesture.tx-gesture.x)*follow;gesture.y+=(gesture.ty-gesture.y)*follow;gesture.dx+=(gesture.vx-gesture.dx)*follow;gesture.dy+=(gesture.vy-gesture.dy)*follow;gesture.strength+=(gesture.target-gesture.strength)*(1.-Math.exp(-dt*(gesture.target>gesture.strength?16:2.8)));const targetScroll=scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);scrollBlend+=(targetScroll-scrollBlend)*.12;if(slow>50&&quality>.65){quality=.65;resize();slow=0;}draw();}raf=requestAnimationFrame(tick);}
  function sync(){cancelAnimationFrame(raf);raf=0;last=0;if(reduced.matches||navigator.connection?.saveData){host.dataset.render='fallback';return;}if(allowed()&&init())raf=requestAnimationFrame(tick);}
- const excluded='a,button,input,textarea,select,summary,dialog,header,.artist';
+ const excluded='a,button,input,textarea,select,summary,dialog,header,.artist,.gallery';
  let touchId=null;
  function moveInk(x,y,first,touch){
   const bounds=host.getBoundingClientRect();
