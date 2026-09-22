@@ -1,6 +1,7 @@
 (() => {
  'use strict';
  const source=document.querySelector('#sumi');
+ const movementDisplacement=document.querySelector('#movement-displacement');
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  function decorate(heading){
   if(!heading.textContent.trim()||heading.querySelector('.ink-word'))return;
@@ -29,6 +30,10 @@
  function measure(){
   for(const w of windows){
    const rect=w.el.getBoundingClientRect(),css=getComputedStyle(w.el),dpr=Math.min(devicePixelRatio,1.5);
+   if(w.el.classList.contains('movement-word')&&movementDisplacement){
+    const size=parseFloat(css.fontSize)||60;
+    movementDisplacement.setAttribute('scale',String(Math.max(7,Math.min(26,size*.13))));
+   }
    w.rect=rect;
    const width=Math.max(1,Math.ceil(rect.width*dpr)),height=Math.max(1,Math.ceil(rect.height*dpr));
    w.canvas.width=w.mask.width=width;w.canvas.height=w.mask.height=height;
