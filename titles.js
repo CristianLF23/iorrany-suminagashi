@@ -16,7 +16,7 @@
   else{el=document.createElement('span');range.surroundContents(el);}
   el.classList.add('ink-word');
  }
- document.querySelectorAll('h1,h2,h3,h4,.statement').forEach(decorate);
+ document.querySelectorAll('h1,h3,.statement,dialog h2').forEach(decorate);
  document.addEventListener('ink-title-change',event=>decorate(event.detail));
  const targets=[...document.querySelectorAll('main .ink-word')];
  const windows=targets.map(el=>{

@@ -6,10 +6,11 @@
  document.addEventListener('ink-frame',()=>{
   if(reduced.matches)return;
   const rect=disc.getBoundingClientRect();if(rect.bottom<76||rect.top>innerHeight)return;
-  ctx.globalCompositeOperation='source-over';ctx.filter='hue-rotate(140deg) saturate(1.4) brightness(1.3)';
+  const hue=95+(performance.now()*.014)%220;
+  ctx.globalCompositeOperation='source-over';ctx.filter=`hue-rotate(${hue}deg) saturate(1.65) brightness(1.18) contrast(1.08)`;
   // A separate view into the same ink, tinted independently inside the object.
   const crop=Math.min(source.width,source.height)*.42;
   ctx.drawImage(source,(source.width-crop)/2,(source.height-crop)/2,crop,crop,0,0,256,256);
-  ctx.filter='none';ctx.globalCompositeOperation='screen';ctx.fillStyle='#372983';ctx.fillRect(0,0,256,256);
+  ctx.filter='none';ctx.globalCompositeOperation='source-over';
  });
 })();
