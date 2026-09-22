@@ -64,7 +64,13 @@
  function resize(){if(!gl||lost)return;const bounds=host.getBoundingClientRect();const dpr=Math.min(devicePixelRatio,1.25)*quality;const cap=Math.min(1,Math.sqrt(1000000/Math.max(1,bounds.width*bounds.height*dpr*dpr)));canvas.width=Math.max(1,Math.round(bounds.width*dpr*cap));canvas.height=Math.max(1,Math.round(bounds.height*dpr*cap));gl.viewport(0,0,canvas.width,canvas.height);draw();}
  function draw(){if(!gl||lost)return;if(reduced.matches||navigator.connection?.saveData){host.dataset.render='fallback';return;}gl.uniform2f(uniforms.res,canvas.width,canvas.height);gl.uniform1f(uniforms.time,elapsed);gl.uniform3f(uniforms.gesture,gesture.x,gesture.y,gesture.strength);gl.uniform2f(uniforms.flow,gesture.dx,gesture.dy);gl.uniform1f(uniforms.scroll,scrollBlend);gl.drawArrays(gl.TRIANGLES,0,6);host.dataset.render='webgl';canvas.dataset.frames=String(++drawn);}
  function allowed(){return visible&&!reduced.matches&&!navigator.connection?.saveData&&!document.hidden&&!document.querySelector('#work-dialog[open]')&&!lost;}
- const originalDraw=draw;draw=function(){originalDraw();if(gl&&!lost&&host.dataset.render==='webgl')document.dispatchEvent(new Event('ink-frame'));};
+ const originalDraw=draw;draw=function(){
+  originalDraw();
+  if(gl&&!lost&&host.dataset.render==='webgl'){
+   const phase=((Math.max(0,elapsed-6)*.035+scrollBlend*3.2)%4+4)%4;
+   document.dispatchEvent(new CustomEvent('ink-frame',{detail:{time:elapsed,palettePhase:phase}}));
+  }
+ };
  function tick(now){raf=0;if(!allowed()){sync();return;}if(!last)last=now;const delta=now-last;if(delta>=32){if(delta>50)slow++;else slow=Math.max(0,slow-1);elapsed+=Math.min(delta,75)/1000;last=now;if(now>gesture.until&&!gesture.active){gesture.target=0;gesture.vx*=.88;gesture.vy*=.88;}const dt=Math.min(delta,75)/1000;const follow=1.-Math.exp(-dt*18);gesture.x+=(gesture.tx-gesture.x)*follow;gesture.y+=(gesture.ty-gesture.y)*follow;gesture.dx+=(gesture.vx-gesture.dx)*follow;gesture.dy+=(gesture.vy-gesture.dy)*follow;gesture.strength+=(gesture.target-gesture.strength)*(1.-Math.exp(-dt*(gesture.target>gesture.strength?16:2.8)));const targetScroll=scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);scrollBlend+=(targetScroll-scrollBlend)*.12;if(slow>50&&quality>.65){quality=.65;resize();slow=0;}draw();}raf=requestAnimationFrame(tick);}
  function sync(){cancelAnimationFrame(raf);raf=0;last=0;if(reduced.matches||navigator.connection?.saveData){host.dataset.render='fallback';return;}if(allowed()&&init())raf=requestAnimationFrame(tick);}
  const excluded='a,button,input,textarea,select,summary,dialog,header,.artist,.gallery';
