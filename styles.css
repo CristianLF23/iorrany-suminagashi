@@ -33,7 +33,8 @@ dialog{width:calc(100% - 24px);max-width:1100px;max-height:90svh;background:#0d0
 .statement em{-webkit-text-stroke:0;color:inherit}
 .ink-word{display:inline-block;position:relative;isolation:isolate;white-space:nowrap;line-height:1.12!important;vertical-align:baseline;color:transparent!important;-webkit-text-stroke:1px #fff;background:url('assets/sumi-poster.webp') center/cover;background-clip:text;-webkit-background-clip:text}
 .ink-word.ink-ready{background:none}.artist .ink-word{-webkit-text-stroke-color:#262630!important}
-.movement-word{font-family:Hipnouma,Barlow,Impact,sans-serif;font-size:.98em!important;font-weight:400;line-height:1!important;letter-spacing:.01em}
+.movement-word{font-family:Hipnouma,Barlow,Impact,sans-serif;font-size:.98em!important;font-weight:400;line-height:1!important;letter-spacing:.01em;filter:drop-shadow(0 3px 8px #07080c80)}
+.movement-word:not(.ink-ready){background-image:linear-gradient(125deg,#ffffff78,#ccd6ff38 45%,#ffc4dc30 72%,#ffffff55),url('assets/sumi-poster.webp');background-blend-mode:screen}
 .letter-ink{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:none}
 .ink-word.ink-ready{color:transparent!important;-webkit-text-stroke:1px #fff;paint-order:stroke fill}
 .ink-ready .letter-ink{display:block}
@@ -56,3 +57,10 @@ dialog{width:calc(100% - 24px);max-width:1100px;max-height:90svh;background:#0d0
 @media(max-width:699px){.hero-title{margin-top:215px}.hero h1 .movement-word{font-size:1.38em!important;line-height:1!important}.hero-yoyo{right:12%;width:98px}.yoyo-disc{width:94px;height:87px}.yoyo-string{height:150px}}
 @media(prefers-reduced-motion:reduce){.ink-word{color:inherit!important;-webkit-text-stroke:0!important;background:none}.hero-yoyo{animation:none}.mobile-intro{display:none}}
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.ink-word.ink-ready{color:inherit!important;-webkit-text-stroke:0}.letter-ink{display:none!important}}
+
+/* Contact actions carry a slow, soft color signal without competing with the artwork. */
+.floating-whatsapp,.contact .button,.contact a[href*="wa.me"],dialog a[href*="wa.me"]{color:#15131b;border:1px solid #ffffffb8;background:linear-gradient(115deg,#e9ddff,#ffd9df,#d9e8ff,#eadcff);background-size:320% 320%;box-shadow:0 8px 28px #8e78c329,0 1px 0 #fff9 inset;animation:contact-pastels 14s ease-in-out infinite;transition:filter .3s ease,transform .3s ease}
+.contact a[href*="wa.me"],dialog a[href*="wa.me"]{padding:12px 16px;min-height:48px;border-bottom-color:#ffffffb8}
+@media(hover:hover){.floating-whatsapp:hover,.contact .button:hover,.contact a[href*="wa.me"]:hover,dialog a[href*="wa.me"]:hover{filter:saturate(1.08) brightness(1.04);transform:translateY(-2px)}}
+@keyframes contact-pastels{0%,100%{background-position:0% 50%}33%{background-position:55% 45%}66%{background-position:100% 55%}}
+@media(prefers-reduced-motion:reduce){.floating-whatsapp,.contact .button,.contact a[href*="wa.me"],dialog a[href*="wa.me"]{animation:none;background-position:50% 50%}}

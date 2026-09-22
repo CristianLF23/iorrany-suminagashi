@@ -63,6 +63,15 @@
    c.globalCompositeOperation='source-in';
    if(w.vertical){c.translate(w.canvas.width,w.canvas.height);c.rotate(Math.PI);}
    c.drawImage(source,(scene.left-r.left)*scale,(scene.top-r.top)*scale,scene.width*scale,scene.height*scale);
+   if(w.el.classList.contains('movement-word')){
+    c.setTransform(1,0,0,1,0,0);c.globalCompositeOperation='source-atop';
+    const glass=c.createLinearGradient(0,0,w.canvas.width,w.canvas.height);
+    glass.addColorStop(0,'rgba(255,255,255,.42)');glass.addColorStop(.36,'rgba(216,222,255,.18)');glass.addColorStop(.7,'rgba(255,190,219,.13)');glass.addColorStop(1,'rgba(255,255,255,.3)');
+    c.fillStyle=glass;c.fillRect(0,0,w.canvas.width,w.canvas.height);
+    const sheen=c.createLinearGradient(0,0,0,w.canvas.height*.55);sheen.addColorStop(0,'rgba(255,255,255,.3)');sheen.addColorStop(1,'rgba(255,255,255,0)');
+    c.fillStyle=sheen;c.fillRect(0,0,w.canvas.width,w.canvas.height*.58);
+   }
+   c.globalCompositeOperation='source-over';
    w.el.classList.add('ink-ready');
   }
  });
