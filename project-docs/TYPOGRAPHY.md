@@ -1,6 +1,6 @@
 # Typography update, 22 September 2026
 
-Display typography uses locally hosted Syne 700 (SIL Open Font License, assets/fonts/Syne-OFL.txt). Body copy remains DM. Broad letterforms echo the flowing silhouettes without introducing additional ornamental artwork.
+Display typography was restored to the original locally hosted Barlow Condensed Bold at the user's request. Original responsive sizes and spacing are restored; body copy remains DM. The earlier Syne experiment is no longer applied.
 
 Following the refined brief, the window treatment is limited to MOVIMENTO, IDENTIDADE and FLUXO. Other headings, including vertical section names, remain solid. White 1px contours (1.25px on desktop) preserve the letter silhouette.
 
