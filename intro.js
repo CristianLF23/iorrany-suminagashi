@@ -9,7 +9,7 @@
  overlay.append(video,sound,skip);document.body.append(overlay,audio);overlay.showModal();document.documentElement.classList.add('intro-active');
  let closing=false,visualFinished=false,audioStarted=false,audioFading=false,playTimer,failTimer,fadeFrame;
  function removeAudio(){if(fadeFrame)cancelAnimationFrame(fadeFrame);audio.volume=0;audio.pause();audio.remove();}
- function fadeAudio(duration=3000){
+ function fadeAudio(duration=700){
   if(audioFading||!audioStarted){if(!audioStarted)removeAudio();return;}
   audioFading=true;
   const remaining=Number.isFinite(audio.duration)?Math.max(0,(audio.duration-audio.currentTime)*1000-80):duration;
@@ -30,8 +30,7 @@
  function finishVisual(immediate=false){
   if(closing)return;closing=true;clearTimeout(failTimer);
   if(immediate){cleanupVisual();fadeAudio(700);return;}
-  // Start the long audio fade with the visual fade so it reaches silence before the file ends.
-  fadeAudio(3000);overlay.classList.add('is-leaving');setTimeout(cleanupVisual,850);
+  overlay.classList.add('is-leaving');setTimeout(cleanupVisual,850);
  }
  function stopAll(){cleanupVisual();audioStarted=false;removeAudio();}
  function startAudio(){
@@ -42,13 +41,8 @@
  }
  failTimer=setTimeout(()=>finishVisual(true),4000);
  video.addEventListener('playing',()=>{clearTimeout(failTimer);startAudio();if(!playTimer)playTimer=setTimeout(()=>finishVisual(),9000);},{once:true});
- video.addEventListener('timeupdate',()=>{
-  if(!video.duration)return;
-  const remaining=video.duration-video.currentTime;
-  if(remaining<=1.1)fadeAudio(3000);
-  if(remaining<=.85)finishVisual();
- });
- video.addEventListener('ended',()=>{cleanupVisual();fadeAudio(3000);});
+ video.addEventListener('timeupdate',()=>{if(video.duration&&video.duration-video.currentTime<=.85)finishVisual();});
+ video.addEventListener('ended',cleanupVisual);
  video.addEventListener('error',()=>finishVisual(true));
  audio.addEventListener('error',()=>{sound.hidden=true;audioStarted=false;removeAudio();});
  audio.addEventListener('ended',removeAudio,{once:true});
@@ -56,6 +50,6 @@
  overlay.addEventListener('cancel',event=>{event.preventDefault();finishVisual(true);});
  mobile.addEventListener('change',()=>{if(!mobile.matches)stopAll();});
  addEventListener('pagehide',stopAll,{once:true});
- video.src='assets/ioio-intro.mp4';audio.src='assets/ioio-intro-audio.m4a';
+ video.src='assets/ioio-intro.mp4';audio.src='assets/ioio-intro-audio-faded.m4a';
  video.play()?.catch(()=>finishVisual(true));
 })();
