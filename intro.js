@@ -1,6 +1,6 @@
 (() => {
- const mobile=matchMedia('(max-width: 699px), (max-width: 899px) and (pointer: coarse)'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
- if(!mobile.matches||reduced.matches)return;
+ const mobile=matchMedia('(max-width: 699px), (max-width: 899px) and (pointer: coarse)');
+ if(!mobile.matches)return;
  const overlay=document.createElement('dialog');overlay.className='mobile-intro';overlay.setAttribute('aria-label','Abertura da Ioiô Tattoo');
  const video=document.createElement('video');video.muted=true;video.defaultMuted=true;video.playsInline=true;video.autoplay=true;video.preload='auto';video.setAttribute('aria-hidden','true');
  const audio=document.createElement('audio');audio.preload='auto';audio.volume=.85;audio.setAttribute('aria-hidden','true');
@@ -49,7 +49,7 @@
  audio.addEventListener('ended',removeAudio,{once:true});
  sound.addEventListener('click',startAudio);skip.addEventListener('click',()=>finishVisual(true));
  overlay.addEventListener('cancel',event=>{event.preventDefault();finishVisual(true);});
- reduced.addEventListener('change',()=>{if(reduced.matches)stopAll();});mobile.addEventListener('change',()=>{if(!mobile.matches)stopAll();});
+ mobile.addEventListener('change',()=>{if(!mobile.matches)stopAll();});
  addEventListener('pagehide',stopAll,{once:true});
  video.src='assets/ioio-intro.mp4';audio.src='assets/ioio-intro-audio.m4a';
  video.play()?.catch(()=>finishVisual(true));

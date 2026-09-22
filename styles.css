@@ -55,7 +55,7 @@ dialog{width:calc(100% - 24px);max-width:1100px;max-height:90svh;background:#0d0
 @media(min-width:700px){.hero-yoyo{right:12%;width:164px}.yoyo-string{height:175px}.yoyo-disc{width:160px;height:148px}.artist-yoyo{right:-40px;top:0;width:90%;height:100%;min-height:0}}
 @media(min-width:1100px){.hero-yoyo{right:17%;width:198px}.yoyo-string{height:210px}.yoyo-disc{width:194px;height:180px}}
 @media(max-width:699px){.hero-title{margin-top:215px}.hero h1 .movement-word{font-size:1.38em!important;line-height:1!important}.hero-yoyo{right:12%;width:98px}.yoyo-disc{width:94px;height:87px}.yoyo-string{height:150px}}
-@media(prefers-reduced-motion:reduce){.ink-word{color:inherit!important;-webkit-text-stroke:0!important;background:none}.hero-yoyo{animation:none}.mobile-intro{display:none}}
+@media(prefers-reduced-motion:reduce){.ink-word{color:inherit!important;-webkit-text-stroke:0!important;background:none}.hero-yoyo{animation:none}}
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.ink-word.ink-ready{color:inherit!important;-webkit-text-stroke:0}.letter-ink{display:none!important}}
 
 /* Contact actions carry a slow, soft color signal without competing with the artwork. */
